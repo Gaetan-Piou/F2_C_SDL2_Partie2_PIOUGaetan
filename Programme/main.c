@@ -41,11 +41,12 @@ int main(int argc, char *argv[])    //arguments obligatoire pour compiler en SDL
             //----------------------------------------------------------------------------//
             //Création d'une texture à partir d'un PNG
             SDL_SetRenderTarget(pRenderer, NULL); //redéfinitions de la zone de travail
-            SDL_Surface* pPng = IMG_Load("mule.png");
-            SDL_Texture* Image = SDL_CreateTextureFromSurface(pRenderer,pPng);
+            SDL_Surface* pPng = IMG_Load("mule.png"); //On charge la surface
+            SDL_Texture* Image = SDL_CreateTextureFromSurface(pRenderer,pPng); //On utilise la surface pour creer la texture
 
             SDL_FreeSurface(pPng);
 
+            //On verifie si la texture est bien creee
             if (Image == NULL)
               printf("erreur");
 
