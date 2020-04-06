@@ -22,9 +22,6 @@ int main(int argc, char *argv[])    //arguments obligatoire pour compiler en SDL
         if(pWindow!=NULL)
         {
             pRenderer=SDL_CreateRenderer(pWindow,-1,SDL_RENDERER_PRESENTVSYNC);
-           /* }
-            else
-            {*/
 
             SDL_SetRenderDrawColor(pRenderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
             SDL_RenderPresent(pRenderer);   //afficher le Renderer
@@ -41,7 +38,7 @@ int main(int argc, char *argv[])    //arguments obligatoire pour compiler en SDL
             //----------------------------------------------------------------------------//
             //Création d'une texture à partir d'un PNG
             SDL_SetRenderTarget(pRenderer, NULL); //redéfinitions de la zone de travail
-            SDL_Surface* pPng = IMG_Load("mule.png"); //On charge la surface
+            SDL_Surface* pPng = IMG_Load("assets/mule.png"); //On charge la surface
             SDL_Texture* Image = SDL_CreateTextureFromSurface(pRenderer,pPng); //On utilise la surface pour creer la texture
 
             SDL_FreeSurface(pPng);
@@ -58,6 +55,53 @@ int main(int argc, char *argv[])    //arguments obligatoire pour compiler en SDL
             SDL_RenderCopy(pRenderer, Image, NULL, &myRect);
             SDL_RenderPresent(pRenderer);
             //----------------------------------------------------------------------------//
+
+
+
+            //----------------------------------------------------------------------------//
+            //Création d'un tileset
+            SDL_SetRenderTarget(pRenderer, NULL);
+            SDL_Surface* spritePng = IMG_Load("assets/tileset_sprite.png");
+            SDL_Texture* spriteImage = SDL_CreateTextureFromSurface(pRenderer,spritePng);
+
+            SDL_FreeSurface(spritePng);
+
+
+            int quit = 0;                                                                   //Mise en place d'une condition de sortie via un pseudo bool
+            SDL_Event event;
+
+            SDL_Rect myRectSource;                                                        //Définition d'une zone d'affichage
+            myRect.x = 0;
+            myRect.y = 0;
+
+           while (!quit)
+            {
+                Uint32 ticks = SDL_GetTicks();
+                Uint32 sprite = (ticks / 100) % 4;
+                SDL_QueryTexture(spritePng, NULL, NULL, &myRectSource.w, &myRectSource.h);  //Appel de la texture créer à partir de l'image
+                myRectSource.w = myRectSource.w/4;          //Division des dimensions pour adapter à la taille de chaque images
+                myRectSource.h = myRectSource.h/4;
+
+                SDL_Rect srcrect = { sprite * myRectSource.w, 0, myRectSource.w,  myRectSource.h };     //Mise en place des rects de source et de réception
+                SDL_Rect dstrect = { 717, 610, myRectSource.w,  myRectSource.h };
+
+                SDL_PollEvent(&event);
+
+                switch (event.type)
+                {
+                    case SDL_MOUSEBUTTONDOWN :
+                        quit = 1;
+                        break;
+                }
+
+                SDL_RenderClear(pRenderer);
+                SDL_RenderCopy(pRenderer, Image, NULL, &myRect);
+                SDL_RenderCopy(pRenderer, spritePng, &srcrect, &dstrect);
+                SDL_RenderPresent(pRenderer);
+
+            }
+
+
 
 
             SDL_Delay(10000);
