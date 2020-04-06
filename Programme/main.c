@@ -16,7 +16,7 @@ int main(int argc, char *argv[])    //arguments obligatoire pour compiler en SDL
     if(SDL_Init(SDL_INIT_EVERYTHING)>=0)    //INIT_EVERYTHING = initialise l'audio, la vidéo, les contrôles,... cf; SDL wiki/API by name/SDL_Init
     {
         //succès, créer window
-        pWindow=SDL_CreateWindow("SDL_Application",SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 780, SDL_WINDOW_SHOWN);//x,y,width,eight
+        pWindow=SDL_CreateWindow("SDL_Application",SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1200, 780, SDL_WINDOW_SHOWN);//x,y,width,eight
 
         //si succès, créer window et renderer
         if(pWindow!=NULL)
@@ -61,6 +61,7 @@ int main(int argc, char *argv[])    //arguments obligatoire pour compiler en SDL
             //----------------------------------------------------------------------------//
             //Création d'un tileset
             SDL_SetRenderTarget(pRenderer, NULL);
+
             SDL_Surface* spritePng = IMG_Load("assets/tileset_sprite.png");
             SDL_Texture* spriteImage = SDL_CreateTextureFromSurface(pRenderer,spritePng);
 
@@ -71,19 +72,21 @@ int main(int argc, char *argv[])    //arguments obligatoire pour compiler en SDL
             SDL_Event event;
 
             SDL_Rect myRectSource;                                                        //Définition d'une zone d'affichage
-            myRect.x = 0;
-            myRect.y = 0;
+            myRectSource.x = 0;
+            myRectSource.y = 0;
+            SDL_QueryTexture(spriteImage, NULL, NULL, &myRectSource.w, &myRectSource.h);  //Appel de la texture créer à partir de l'image
+            myRectSource.w = myRectSource.w;          //Division des dimensions pour adapter à la taille de chaque images
+            myRectSource.h = myRectSource.h/4;
+
+            printf("%d,%d\n",myRectSource.w,myRectSource.h);
 
            while (!quit)
             {
                 Uint32 ticks = SDL_GetTicks();
                 Uint32 sprite = (ticks / 100) % 4;
-                SDL_QueryTexture(spritePng, NULL, NULL, &myRectSource.w, &myRectSource.h);  //Appel de la texture créer à partir de l'image
-                myRectSource.w = myRectSource.w/4;          //Division des dimensions pour adapter à la taille de chaque images
-                myRectSource.h = myRectSource.h/4;
 
-                SDL_Rect srcrect = { sprite * myRectSource.w, 0, myRectSource.w,  myRectSource.h };     //Mise en place des rects de source et de réception
-                SDL_Rect dstrect = { 717, 610, myRectSource.w,  myRectSource.h };
+                SDL_Rect srcrect = { 0, sprite * myRectSource.h, myRectSource.w,  myRectSource.h };     //Mise en place des rects de source et de réception
+                SDL_Rect dstrect = { 200, 150, myRectSource.w,  myRectSource.h };
 
                 SDL_PollEvent(&event);
 
@@ -96,16 +99,13 @@ int main(int argc, char *argv[])    //arguments obligatoire pour compiler en SDL
 
                 SDL_RenderClear(pRenderer);
                 SDL_RenderCopy(pRenderer, Image, NULL, &myRect);
-                SDL_RenderCopy(pRenderer, spritePng, &srcrect, &dstrect);
+                SDL_RenderCopy(pRenderer, spriteImage, &srcrect, &dstrect);
                 SDL_RenderPresent(pRenderer);
 
             }
 
-
-
-
-            SDL_Delay(10000);
-
+            SDL_DestroyTexture(spriteImage);
+            SDL_DestroyTexture(Image);
             SDL_DestroyRenderer(pRenderer); //On supprime tout ce qui à été créer
             SDL_DestroyWindow(pWindow);
             SDL_Quit();
