@@ -1,2 +1,4 @@
 *.exe
 *.docx
+*.layout
+*.depend
