@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_image.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "voidCarrés.h"
 
 int main(int argc, char *argv[])    //arguments obligatoire pour compiler en SDL
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])    //arguments obligatoire pour compiler en SDL
 
             SDL_DestroyTexture(spriteImage);
             SDL_DestroyTexture(Image);
-            SDL_DestroyRenderer(pRenderer); //On supprime tout ce qui à été créer
+            SDL_DestroyRenderer(pRenderer); //On supprime tout ce qui à été cree
             SDL_DestroyWindow(pWindow);
             SDL_Quit();
 
