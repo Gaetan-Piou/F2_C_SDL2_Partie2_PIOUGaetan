@@ -9,7 +9,9 @@
 #define NOMBRE_BLOCS_LARGEUR 15  // nombre a afficher en x et y
 #define NOMBRE_BLOCS_HAUTEUR 13
 
-void Afficher (SDL_Renderer*, SDL_Texture*, char**, int, int);
+const int FPS=60;
+
+void Afficher(SDL_Renderer* pRenderer, SDL_Texture* textuTil, char** table, int nombre_blocs_largeur, int nombre_blocs_hauteur,int xBase, int yBase);
 
 
 
@@ -33,19 +35,19 @@ int main(int argc, char *argv[])
             //Tilemapping
 
             char* table[] = {
-                "000000000000000",
-                "000000000000000",
-                "000000000000000",
-                "000000000000000",
-                "000000000000000",
-                "000000022122200",
-                "000000000000000",
-                "003400000000000",
-                "005600000000000",
-                "005600000000000",
-                "005600000000000",
-                "777777777777777",
-                "777777777777777"
+                "000000000000000000000000000000",
+                "000000000000000000000000000000",
+                "000000000000000000000000100000",
+                "000000000000000000000000000000",
+                "000000000000000000000000000000",
+                "000000022122200000000000000000",
+                "000000000000000000000021212000",
+                "003400000000000000000000000000",
+                "005600000000000000000000000000",
+                "005600000000000003400000000000",
+                "005600000000000005600000000000",
+                "777777777777777777777777777777",
+                "777777777777777777777777777777"
             };
 
             SDL_Surface *tileset = NULL;
@@ -67,7 +69,7 @@ int main(int argc, char *argv[])
             }
             SDL_FreeSurface(tileset);
 
-            Afficher(pRenderer, textuTil, table, NOMBRE_BLOCS_LARGEUR, NOMBRE_BLOCS_HAUTEUR);
+            Afficher(pRenderer, textuTil, table, NOMBRE_BLOCS_LARGEUR, NOMBRE_BLOCS_HAUTEUR,0,0);
             while(continuer)
             {
                 SDL_PollEvent(&event);
@@ -87,15 +89,9 @@ int main(int argc, char *argv[])
                         break;
                 }
 
-                tempsActuel = SDL_GetTicks();
-                if (tempsActuel - tempsPrecedent > 30) /* si 30ms se sont écoulé depuis le dernier tour de la boucle plus le temps est petit plus il se deplace vite */
-                {
-                    tempsPrecedent = tempsActuel; // le temps actuel devient le temps présent
-                }
-                else
-                {
-                    SDL_Delay(30 - (tempsActuel - tempsPrecedent));
-                }
+                
+
+                
 
                 SDL_RenderPresent(pRenderer);
             }
@@ -116,7 +112,7 @@ int main(int argc, char *argv[])
 }
 
 
-void Afficher(SDL_Renderer* pRenderer, SDL_Texture* textuTil, char** table, int nombre_blocs_largeur, int nombre_blocs_hauteur) {
+void Afficher(SDL_Renderer* pRenderer, SDL_Texture* textuTil, char** table, int nombre_blocs_largeur, int nombre_blocs_hauteur,int xBase, int yBase) {
     int i, j;
     SDL_Rect Rect_dest;
     SDL_Rect Rect_source;
@@ -124,9 +120,9 @@ void Afficher(SDL_Renderer* pRenderer, SDL_Texture* textuTil, char** table, int 
     Rect_dest.w = LARGEUR_TILE;
     Rect_source.h = HAUTEUR_TILE;
     Rect_dest.h = HAUTEUR_TILE;
-    for(i = 0 ; i < NOMBRE_BLOCS_LARGEUR; i++)
+    for(i = xBase ; i < NOMBRE_BLOCS_LARGEUR + xBase; i++)
     {
-        for(j = 0 ; j < NOMBRE_BLOCS_HAUTEUR; j++)
+        for(j = yBase ; j < NOMBRE_BLOCS_HAUTEUR + yBase; j++)
         {
             Rect_dest.x = i * LARGEUR_TILE;
             Rect_dest.y = j * HAUTEUR_TILE;
